@@ -37,4 +37,14 @@ I had to work around getting the house ready for some family guests we are expec
 
 ## Timing
 
-This takes around 2 minutes to process the full June TOC file on my MacBook Pro M1.
+When run as a debugging build, this takes around 2 minutes to process the full June TOC file on my MacBook Pro M1.
+
+```
+$ time swift run url-gen ~/Downloads/2024-06-01_anthem_index.json | grep "http" > urls.txt
+Building for debugging...
+[1/1] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.09s)
+
+real    1m47.942s
+user    1m36.242s
+sys     0m8.984s```

@@ -61,16 +61,6 @@ public class TOCParser {
             }
         }
     }
-    
-    func convertLineToJSON(bytes: UnsafeMutablePointer<CChar>?) -> Int? {
-        let line = String.init(cString: bytes!).trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        guard let numberOnLine = Int(line) else {
-            return nil
-        }
-        
-        return numberOnLine
-    }
 }
 
 struct TOCFile : Codable {

@@ -3,6 +3,7 @@ import Foundation
 public class TOCParser {
     let filePath: String, filePointer: UnsafeMutablePointer<FILE>
     var lineBuf: UnsafeMutablePointer<CChar>? = nil, lineCap: Int = 0, lineNum: Int = 1, outputArray: [Int] = []
+    var urls: [String: String] = [:]
     
     public init(file: String) {
         filePath = file
@@ -29,9 +30,9 @@ public class TOCParser {
         var bytesRead = getline(&lineBuf, &lineCap, filePointer)
 
         while bytesRead > 0 { // Read every line in file -> O(k)
-            let lineAsData = Data(bytes: lineBuf!, count: bytesRead-2)
+            let lineAsData = Data(bytes: lineBuf!, count: bytesRead-2) // Drop the trailing comma and new-line
             guard let reportingStructureLine: ReportingStructure = try? JSONDecoder().decode(ReportingStructure.self, from: lineAsData) else {
-                print("Warning: Skipping line [\(lineNum)] because it is not convertable to a ReportingStructure")
+                print("Warning: Skipping line [\(lineNum)] because it is not convertible to a ReportingStructure")
                 bytesRead = getline(&lineBuf, &lineCap, filePointer)
                 lineNum += 1
                 continue
@@ -39,20 +40,25 @@ public class TOCParser {
 
             if let inNetworkFiles = reportingStructureLine.in_network_files {
                 for inNetworkFile in inNetworkFiles {
-                    if inNetworkFile.location.contains(StateCodes.NewYork.rawValue) {
-                        print(inNetworkFile.location)
-                    }
+                    urls[inNetworkFile.location] = inNetworkFile.location
                 }
             }
 
             if let allowedAmountFile = reportingStructureLine.allowed_amount_file {
-                if allowedAmountFile.location.contains(StateCodes.NewYork.rawValue) {
-                    print(allowedAmountFile.location)
-                }
+                urls[allowedAmountFile.location] = allowedAmountFile.location
             }
 
             bytesRead = getline(&lineBuf, &lineCap, filePointer)
             lineNum += 1
+        }
+
+        for (_, url) in urls {
+            let urlPart = url.prefix(100) // Reduce our search space
+            for code in NewYorkCodes {
+                if urlPart.contains("_\(code)_") {
+                    print(url)
+                }
+            }
         }
     }
     
@@ -103,5 +109,8 @@ enum PlanMarketType : String, Codable {
 }
 
 enum StateCodes : String, Codable {
-    case NewYork = "254_39F0"
+    case NewYork = "254_39F0" // 254_39B0, 301_71B0, 301_71A0, 302_42B0, 302_42F0, 800_72A0, 800_72B0
 }
+
+// let NewYorkCodes: [String] = ["254_39F0", "254_39B0", "301_71B0", "301_71A0", "302_42B0", "302_42F0", "800_72A0", "800_72B0"]
+let NewYorkCodes: [String] = ["254", "301", "302", "800"]

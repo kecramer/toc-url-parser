@@ -38,12 +38,14 @@ public class TOCParser {
                 continue
             }
 
+            // in_network_files is optional so make sure we have one before trying to read it
             if let inNetworkFiles = reportingStructureLine.in_network_files {
                 for inNetworkFile in inNetworkFiles {
                     urls[inNetworkFile.location] = inNetworkFile.location
                 }
             }
 
+            // allowed_amount_file is optional so make sure we have one before trying to read it
             if let allowedAmountFile = reportingStructureLine.allowed_amount_file {
                 urls[allowedAmountFile.location] = allowedAmountFile.location
             }

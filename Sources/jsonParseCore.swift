@@ -65,6 +65,7 @@ public class TOCParser {
     }
 }
 
+// TOC Schema: https://github.com/CMSgov/price-transparency-guide/tree/master/schemas/table-of-contents
 struct TOCFile : Codable {
     let reporting_entity_name: String
     let reporting_entity_type: String
@@ -106,3 +107,5 @@ enum StateCodes : String, Codable {
 
 // let NewYorkCodes: [String] = ["254_39F0", "254_39B0", "301_71B0", "301_71A0", "302_42B0", "302_42F0", "800_72A0", "800_72B0"]
 let NewYorkCodes: [String] = ["254", "301", "302", "800"]
+
+// In Network Rates Schema: https://github.com/CMSgov/price-transparency-guide/blob/master/schemas/in-network-rates/in-network-rates.json
